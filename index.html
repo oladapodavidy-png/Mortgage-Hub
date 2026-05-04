@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mortgage Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#1a1a2e;--paper:#f5f0e8;--cream:#ede8dc;--accent:#c8a96e;--accent-dark:#a07840;--green:#2d6a4f;--green-light:#52b788;--red:#9b2226;--muted:#6b6560;--card:#faf7f2;--border:#ddd5c4;--warn-bg:rgba(200,169,110,0.15);}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+.page-wrap{width:100%;background:var(--paper);min-height:100vh;padding-bottom:60px;}
+@media(min-width:768px){.panel{padding:28px 32px;}header{padding:48px 40px 36px;}header h1{font-size:40px;}.tab{padding:16px 24px;font-size:13px;}.result-grid{grid-template-columns:repeat(3,1fr);}.card{padding:24px;}}
+@media(min-width:1024px){body{background:#e8e2d6;}.page-wrap{max-width:1200px;margin:0 auto;}header{padding:56px 60px 44px;}header h1{font-size:52px;}header p{font-size:15px;}.summary-cell .val{font-size:22px;}.summary-cell .lbl{font-size:11px;}.tab{padding:18px 28px;font-size:13px;}.panel{padding:40px 60px;}.desktop-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}.desktop-grid .card{margin-bottom:0;}.desktop-full{grid-column:1/-1;}.card{padding:28px;margin-bottom:20px;}.card-title{font-size:22px;}.explainer{font-size:15px;}.highlight{font-size:14px;}.result-grid{grid-template-columns:repeat(3,1fr);}.erc-table td{font-size:13px;padding:11px 12px;}.erc-table th{padding:10px 12px;font-size:11px;}.glossary-term{font-size:17px;}.glossary-def{font-size:14px;}.timeline-item p{font-size:14px;}.info-key{font-size:14px;}.info-val{font-size:14px;}.tip-box li{font-size:14px;}.breakdown-table td{padding:10px 8px;font-size:13px;}}
+@media(min-width:1400px){.page-wrap{max-width:1400px;}header h1{font-size:60px;}.panel{padding:48px 80px;}}
+header{background:var(--ink);color:var(--paper);padding:32px 24px 28px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(200,169,110,0.15);}
+.header-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,32px);font-weight:900;line-height:1.15;margin-bottom:6px;}
+header p{font-size:13px;color:rgba(245,240,232,0.6);font-weight:300;}
+.summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background-color:var(--accent-dark);}
+.summary-cell{background:var(--ink);padding:12px 10px;text-align:center;}
+.summary-cell .val{font-family:'DM Mono',monospace;font-size:clamp(13px,3vw,16px);font-weight:500;color:var(--accent);display:block;}
+.summary-cell .lbl{font-size:9px;color:rgba(245,240,232,0.5);text-transform:uppercase;letter-spacing:1px;margin-top:2px;display:block;}
+.tabs{display:flex;overflow-x:auto;background:var(--cream);border-bottom:2px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:13px 16px;font-size:11px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;white-space:nowrap;}
+.tab.active{color:var(--ink);border-bottom-color:var(--accent);}
+.panel{display:none;padding:20px 16px;}.panel.active{display:block;}
+.desktop-grid{display:block;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;}
+.card-title{font-family:'Playfair Display',serif;font-size:clamp(16px,4vw,20px);font-weight:700;margin-bottom:3px;}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.explainer{font-size:14px;line-height:1.75;color:#2a2520;}
+.explainer strong{color:var(--ink);}
+.highlight{background:rgba(200,169,110,0.2);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px;line-height:1.65;}
+.highlight.green{background:rgba(82,183,136,0.12);border-left-color:var(--green-light);}
+.highlight.red{background:rgba(155,34,38,0.08);border-left-color:var(--red);}
+.highlight.warn{background:var(--warn-bg);border-left-color:var(--accent-dark);}
+.split-bar{height:14px;border-radius:7px;overflow:hidden;display:flex;margin:10px 0 8px;}
+.interest-seg{background:linear-gradient(90deg,#9b2226,#c0393e);height:100%;}
+.capital-seg{background:linear-gradient(90deg,#2d6a4f,#52b788);height:100%;}
+.split-legend{display:flex;gap:14px;font-size:12px;flex-wrap:wrap;}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle;}
+.breakdown-table{width:100%;border-collapse:collapse;font-size:12px;font-family:'DM Mono',monospace;}
+.breakdown-table th{text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:7px 5px;border-bottom:1px solid var(--border);font-family:'DM Sans',sans-serif;}
+.breakdown-table td{padding:8px 5px;border-bottom:1px solid rgba(221,213,196,0.4);}
+.breakdown-table tr:last-child td{border-bottom:none;}
+.interest-val{color:var(--red);}.capital-val{color:var(--green);}.balance-val{color:var(--ink);font-weight:500;}
+.erc-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;}
+.erc-table th{background:var(--ink);color:var(--accent);padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-family:'DM Sans',sans-serif;}
+.erc-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+.erc-table tr:nth-child(even) td{background:rgba(200,169,110,0.05);}
+.erc-table tr:last-child td{border-bottom:none;}
+.erc-pct{font-family:'DM Mono',monospace;color:var(--red);font-weight:500;}
+.erc-amt{font-family:'DM Mono',monospace;color:var(--ink);font-weight:500;}
+.slider-wrap{margin:14px 0;}
+.slider-label{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px;}
+.slider-label .val{font-family:'DM Mono',monospace;font-weight:500;color:var(--accent-dark);font-size:16px;}
+input[type=range]{width:100%;accent-color:var(--accent-dark);cursor:pointer;}
+.range-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.result-cell{background:var(--cream);border-radius:10px;padding:14px 10px;text-align:center;border:1px solid var(--border);}
+.result-cell .big{font-family:'DM Mono',monospace;font-size:clamp(13px,3.5vw,17px);font-weight:500;display:block;margin-bottom:4px;}
+.result-cell .small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.result-cell.good .big{color:var(--green);}.result-cell.neutral .big{color:var(--accent-dark);}
+.cap-meter{margin:14px 0;}
+.cap-bar-track{height:12px;background:var(--border);border-radius:6px;overflow:hidden;margin:6px 0;}
+.cap-bar-fill{height:100%;border-radius:6px;transition:width 0.4s ease,background 0.4s ease;width:0%;background:linear-gradient(90deg,var(--green),var(--green-light));}
+.cap-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.cap-note{font-size:11px;color:var(--muted);margin-top:4px;}
+.timeline{position:relative;padding-left:22px;margin:14px 0;}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--green-light));}
+.timeline-item{position:relative;margin-bottom:22px;}
+.timeline-item::before{content:'';position:absolute;left:-19px;top:5px;width:14px;height:14px;border-radius:50%;border:2px solid var(--paper);}
+.tl-past::before{background:var(--muted);}.tl-past{opacity:0.55;}
+.tl-current::before{background:var(--accent);box-shadow:0 0 0 3px rgba(200,169,110,0.3);}
+.tl-upcoming::before{background:var(--green-light);}
+.tl-danger::before{background:var(--red);box-shadow:0 0 0 3px rgba(155,34,38,0.2);}
+.tl-heading{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.tl-current .tl-heading{color:var(--accent-dark);font-weight:600;}
+.tl-danger .tl-heading{color:var(--red);font-weight:600;}
+.timeline-item p{font-size:13px;line-height:1.65;color:#2a2520;}
+.tag{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:4px;margin-top:5px;}
+.tag-gold{background:var(--ink);color:var(--accent);}
+.tag-green{background:var(--green);color:#fff;}
+.tag-red{background:var(--red);color:#fff;}
+.tag-grey{background:#ccc;color:#444;}
+.rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+.rate-box{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.rate-box-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.rate-big{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:var(--ink);}
+.rate-big span{font-size:15px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
+.rate-sub{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.lender-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;}
+.lender-table th{background:var(--ink);color:var(--accent);padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-family:'DM Sans',sans-serif;}
+.lender-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:12px;}
+.lender-table tr:nth-child(even) td{background:rgba(200,169,110,0.04);}
+.lender-table tr:last-child td{border-bottom:none;}
+.lender-rate{font-family:'DM Mono',monospace;color:var(--green);font-weight:600;}
+.lender-saving{font-family:'DM Mono',monospace;color:var(--green);font-size:11px;}
+.info-rows{margin:10px 0;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:12px;}
+.info-row:last-child{border-bottom:none;}
+.info-key{font-size:13px;color:var(--muted);}
+.info-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);font-weight:500;text-align:right;}
+.info-val.accent{color:var(--accent-dark);}.info-val.red{color:var(--red);}.info-val.green{color:var(--green);}
+.tip-box{background:var(--ink);color:var(--paper);border-radius:12px;padding:18px;margin-top:14px;}
+.tip-box h4{font-family:'Playfair Display',serif;color:var(--accent);margin-bottom:10px;font-size:16px;}
+.tip-box ul{padding-left:16px;}
+.tip-box li{font-size:13px;line-height:1.7;color:rgba(245,240,232,0.85);margin-bottom:5px;}
+.tip-box li strong{color:var(--accent);}
+.glossary-item{padding:12px 0;border-bottom:1px solid var(--border);}
+.glossary-item:last-child{border-bottom:none;}
+.glossary-term{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.glossary-def{font-size:13px;line-height:1.65;color:#2a2520;}
+.mono{font-family:'DM Mono',monospace;}
+.scenario-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.scenario-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--cream);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.scenario-btn.active{background:var(--ink);color:var(--accent);border-color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+<header>
+  <div class="header-label">Skipton B.S. · Product Z1531</div>
+  <h1>Mortgage<br>Learning Hub</h1>
+  <p>88 Underborough Way, Harpole · 5 Year Fixed No Fee Purchase</p>
+</header>
+<div class="summary-strip">
+  <div class="summary-cell"><span class="val">£296,995</span><span class="lbl">Loan amount</span></div>
+  <div class="summary-cell"><span class="val">4.53%</span><span class="lbl">Fixed rate</span></div>
+  <div class="summary-cell"><span class="val">£1,508.84</span><span class="lbl">Monthly</span></div>
+</div>
+<div class="tabs">
+  <button class="tab active" onclick="showTab('basics',this)">How It Works</button>
+  <button class="tab" onclick="showTab('breakdown',this)">Your Payments</button>
+  <button class="tab" onclick="showTab('overpay',this)">Overpay</button>
+  <button class="tab" onclick="showTab('erc',this)">ERC &amp; Fees</button>
+  <button class="tab" onclick="showTab('remortgage',this)">Remortgage</button>
+  <button class="tab" onclick="showTab('market',this)">Market &amp; Rates</button>
+  <button class="tab" onclick="showTab('glossary',this)">Glossary</button>
+</div>
+<div id="tab-basics" class="panel active"><div class="desktop-grid">
+  <div class="card desktop-full"><div class="card-title">Your mortgage at a glance</div><div class="card-sub">All figures from your Skipton illustration dated 14/11/2025</div><div class="info-rows"><div class="info-row"><span class="info-key">Product</span><span class="info-val">Z1531 — 5 Year Fixed No Fee</span></div><div class="info-row"><span class="info-key">Loan amount</span><span class="info-val accent">£296,995.00</span></div><div class="info-row"><span class="info-key">Property value</span><span class="info-val">£329,995.00</span></div><div class="info-row"><span class="info-key">LTV</span><span class="info-val accent">90%</span></div><div class="info-row"><span class="info-key">Term</span><span class="info-val">30 years · 360 payments</span></div><div class="info-row"><span class="info-key">Fixed rate</span><span class="info-val accent">4.53% until 28/02/2031</span></div><div class="info-row"><span class="info-key">After fixed period</span><span class="info-val red">6.54% SVR</span></div><div class="info-row"><span class="info-key">APRC</span><span class="info-val">5.9%</span></div><div class="info-row"><span class="info-key">Monthly (fixed)</span><span class="info-val accent">£1,508.84</span></div><div class="info-row"><span class="info-key">Monthly (SVR)</span><span class="info-val red">£1,832.08</span></div><div class="info-row"><span class="info-key">Total repayable</span><span class="info-val red">£639,582.92</span></div></div></div>
+  <div class="card"><div class="card-title">Where does £1,508.84 go?</div><div class="card-sub">Interest vs capital every month</div><div class="explainer">Each payment splits into <strong>interest</strong> (the bank's cut) and <strong>capital</strong> (reducing your debt).<div class="highlight red">Month 1: <strong>£1,121 to interest</strong> · Only <strong>£388 reduces your debt</strong>.</div>This slowly shifts in your favour — much faster if you overpay.</div><div class="split-bar"><div class="interest-seg" style="width:74.3%"></div><div class="capital-seg" style="width:25.7%"></div></div><div class="split-legend"><span><span class="legend-dot" style="background:#9b2226"></span>Interest £1,121 (74.3%)</span><span><span class="legend-dot" style="background:#2d6a4f"></span>Capital £388 (25.7%)</span></div></div>
+  <div class="card"><div class="card-title">The total cost reality</div><div class="card-sub">Straight from your Skipton illustration</div><div class="explainer"><div class="highlight red">You borrowed £296,995. Total repayable: <strong>£639,582.92</strong>. That is <strong>£342,587 in interest</strong> — £2.15 for every £1 borrowed.</div><div class="highlight green">Every overpayment permanently reduces the balance interest is charged on. See the Overpay tab.</div></div></div>
+  <div class="card"><div class="card-title">How interest is calculated</div><div class="card-sub">The exact monthly formula</div><div class="explainer"><div class="highlight"><span class="mono">Monthly interest = Balance × (4.53% ÷ 12)</span><br><span style="font-size:12px;margin-top:6px;display:block">£296,995 × 0.003775 = <strong>£1,120.95</strong></span></div>Capital = £1,508.84 − £1,120.95 = <strong>£387.89</strong>. Every overpayment reduces the base permanently.</div></div>
+  <div class="card desktop-full"><div class="card-title">The SVR cliff — 28 February 2031</div><div class="card-sub">The most important date in your mortgage life</div><div class="rate-grid"><div class="rate-box"><div class="rate-box-label">Fixed rate now</div><div class="rate-big">4.53<span>%</span></div><div class="rate-sub">Until 28/02/2031<br>£1,508.84/month</div></div><div class="rate-box" style="border-color:var(--red);background:rgba(155,34,38,0.04);"><div class="rate-box-label" style="color:var(--red);">SVR if you do nothing</div><div class="rate-big" style="color:var(--red);">6.54<span>%</span></div><div class="rate-sub">From 01/03/2031<br>£1,832.08/month</div></div></div><div class="highlight red">Doing nothing costs an extra <strong>£323.24/month</strong> — <strong>£3,878/year</strong> for no benefit.</div></div>
+</div></div>
+<div id="tab-breakdown" class="panel"><div class="desktop-grid">
+  <div class="card"><div class="card-title">Your payment history</div><div class="card-sub">Estimated interest vs capital per payment</div><table class="breakdown-table"><thead><tr><th>Date</th><th>Interest</th><th>Capital</th><th>Balance</th></tr></thead><tbody id="payment-rows"></tbody></table></div>
+  <div class="card"><div class="card-title">After 5 months</div><div class="card-sub">The honest summary</div><div class="explainer"><div class="highlight red">Of £6,534.96 paid, ~<strong>£4,990 went to interest</strong>. Only ~<strong>£1,545 reduced your debt</strong>.</div><div class="highlight green">Balance: ~<strong>£295,450</strong>. LTV: ~<strong>89.5%</strong>. Getting below 85% at remortgage unlocks better rates.</div></div></div>
+  <div class="card desktop-full"><div class="card-title">Year by year projection</div><div class="card-sub">Standard payments only</div><table class="breakdown-table"><thead><tr><th>Year end</th><th>Balance</th><th>LTV</th><th>Interest that year</th></tr></thead><tbody id="yearly-rows"></tbody></table><div class="highlight warn" style="margin-top:12px;">By Feb 2031: balance ~<strong>£271,500</strong>, LTV ~<strong>82%</strong>. Overpaying £150/month pushes below 80%.</div></div>
+</div></div>
+<div id="tab-overpay" class="panel"><div class="desktop-grid">
+  <div class="card desktop-full"><div class="card-title">Overpayment Simulator</div><div class="card-sub">Drag the slider to see the full impact</div><div class="slider-wrap"><div class="slider-label"><span>Extra per month</span><span class="val" id="op-label">£0</span></div><input type="range" min="0" max="1000" step="25" value="0" id="op-slider" oninput="updateSim()"><div class="range-ticks"><span>£0</span><span>£250</span><span>£500</span><span>£750</span><span>£1,000</span></div></div><div class="result-grid"><div class="result-cell neutral"><span class="big" id="res-term">30y 0m</span><span class="small">New term</span></div><div class="result-cell good"><span class="big" id="res-saved">—</span><span class="small">Time saved</span></div><div class="result-cell good"><span class="big" id="res-interest">£0</span><span class="small">Interest saved</span></div><div class="result-cell neutral"><span class="big" id="res-monthly">£1,509</span><span class="small">New monthly total</span></div><div class="result-cell neutral"><span class="big" id="res-balance-5yr">~£271,500</span><span class="small">Balance at yr 5</span></div><div class="result-cell neutral"><span class="big" id="res-ltv-5yr">~82%</span><span class="small">LTV at yr 5</span></div></div></div>
+  <div class="card"><div class="card-title">Your annual overpayment limit</div><div class="card-sub">From Section 9 of your Skipton illustration</div><div class="explainer">Up to <strong>10% of outstanding balance per year</strong> — no ERC.<div class="cap-meter"><div class="cap-labels"><span id="cap-used-label">£0 used/yr</span><span id="cap-max-label">£29,545/yr limit</span></div><div class="cap-bar-track"><div class="cap-bar-fill" id="cap-bar-fill"></div></div><div class="cap-note" id="cap-note">You are within your limit — no ERC applies.</div></div><div class="highlight green">At ~£295,450 balance, limit is <strong>£29,545/yr</strong> or <strong>£2,462/month</strong>.</div><div class="highlight warn">Overpaying beyond 10% triggers an ERC on the excess.</div></div></div>
+  <div class="tip-box desktop-full"><h4>Smart overpayment strategies</h4><ul><li><strong>Round up</strong> — even £50 extra monthly saves thousands. Set a standing order and forget it.</li><li><strong>Lump sums</strong> from bonuses or tax refunds early save far more than later ones.</li><li>Ask Skipton to <strong>reduce the term</strong>, not the monthly payment — maximises interest saving.</li><li><strong>Keep an emergency fund</strong> first — you cannot easily take money back out.</li><li>Check your balance every 6 months and increase the standing order as income grows.</li></ul></div>
+</div></div>
+<div id="tab-erc" class="panel"><div class="desktop-grid">
+  <div class="card desktop-full"><div class="card-title">Early Repayment Charges</div><div class="card-sub">From Section 8 of your Skipton illustration</div><table class="erc-table"><thead><tr><th>Loan balance</th><th>ERC rate</th><th>Valid until</th><th>Max charge</th></tr></thead><tbody><tr><td>£296,995</td><td class="erc-pct">6.00%</td><td>28/02/2027</td><td class="erc-amt">£17,819.70</td></tr><tr><td>£291,364</td><td class="erc-pct">6.00%</td><td>28/02/2028</td><td class="erc-amt">£17,481.85</td></tr><tr><td>£286,356</td><td class="erc-pct">5.00%</td><td>28/02/2029</td><td class="erc-amt">£14,317.80</td></tr><tr><td>£281,116</td><td class="erc-pct">4.00%</td><td>28/02/2030</td><td class="erc-amt">£11,244.66</td></tr><tr><td>£275,634</td><td class="erc-pct">1.75%</td><td>28/02/2031</td><td class="erc-amt">£4,823.60</td></tr></tbody></table><div class="highlight red" style="margin-top:12px;">Currently in the <strong>6% ERC period</strong> until Feb 2027. Full redemption today could cost <strong>£17,819.70</strong>.</div><div class="highlight green">ERCs do <strong>not</strong> apply to overpayments within your 10% annual allowance.</div></div>
+  <div class="card"><div class="card-title">Other fees</div><div class="card-sub">All one-off costs</div><div class="info-rows"><div class="info-row"><span class="info-key">Electronic Payment / CHAP</span><span class="info-val">£20.00</span></div><div class="info-row"><span class="info-key">Redemption Admin Fee</span><span class="info-val">£55.00</span></div><div class="info-row"><span class="info-key">ERC maximum (right now)</span><span class="info-val red">£17,819.70</span></div><div class="info-row"><span class="info-key">Broker fee (paid by Skipton)</span><span class="info-val">£1,187.98</span></div></div><div class="highlight" style="margin-top:10px;"><strong>No Fee product</strong> — Skipton paid Meridian Mortgages £1,187.98 directly. Zero arrangement fee to you.</div></div>
+  <div class="card"><div class="card-title">Payment holiday</div><div class="card-sub">Section 9 of your illustration</div><div class="explainer">After 6 months with surplus, pause payments for up to <strong>3 consecutive months</strong>.<div class="highlight warn">Interest still accrues. Balance may increase. Only use in genuine need.</div></div></div>
+  <div class="card"><div class="card-title">Portability</div><div class="card-sub">If you move home during the fixed period</div><div class="explainer">Your mortgage is <strong>portable</strong>. Transfer to a new property without the ERC if both transactions complete within 6 months.<div class="highlight green">Moving up the ladder within the fixed period does not necessarily trap you.</div></div></div>
+</div></div>
+<div id="tab-remortgage" class="panel"><div class="desktop-grid">
+  <div class="card desktop-full"><div class="card-title">Your remortgage timeline</div><div class="card-sub">Gold = now · Green = upcoming · Red = deadline</div>
+  <div class="timeline">
+    <div class="timeline-item tl-current"><div class="tl-heading">Now · May 2026 — You are here</div><p>Early stage of your 5 year fix. ERC at its highest. Focus on building equity through overpayments.</p><span class="tag tag-gold">Focus: overpayments + equity</span></div>
+    <div class="timeline-item tl-upcoming"><div class="tl-heading">Feb 2027 — ERC remains 6%</div><p>ERC rate stays at 6% but maximum charge falls as your balance reduces. Monitor market rates — no action needed yet.</p><span class="tag tag-grey">Monitor: market rates</span></div>
+    <div class="timeline-item tl-upcoming"><div class="tl-heading">Feb 2029 — ERC drops to 5%</div><p>If rates have fallen significantly, a broker can model whether switching early and paying the ERC saves money. Max charge: £14,317.</p><span class="tag tag-green">Review: is switching worth the ERC?</span></div>
+    <div class="timeline-item tl-upcoming"><div class="tl-heading">Feb 2030 — ERC drops to 4%</div><p>Max ERC now £11,244. If rates have fallen 1.5%+, switching early may break even within 2 to 3 years. Get a broker to run the numbers.</p><span class="tag tag-green">Action: broker comparison</span></div>
+    <div class="timeline-item tl-upcoming"><div class="tl-heading">Aug 2030 — 6 months before expiry</div><p>Most lenders let you lock in a new deal 6 months early. This is your primary action window. Speak to a whole of market broker now.</p><span class="tag tag-green">Action: speak to a whole of market broker</span></div>
+    <div class="timeline-item tl-upcoming"><div class="tl-heading">Feb 2031 — ERC drops to 1.75%</div><p>Final ERC year. Max charge only £4,823. If not locked in yet, do it immediately.</p><span class="tag tag-green">Action: lock in immediately</span></div>
+    <div class="timeline-item tl-danger"><div class="tl-heading">28 Feb 2031 — Fixed rate EXPIRES</div><p>If no deal is active, Skipton moves you to SVR <strong>6.54%</strong> — payment jumps to <strong>£1,832.08</strong>. This must not happen.</p><span class="tag tag-red">DEADLINE: New deal must be live</span></div>
+  </div></div>
+  <div class="card"><div class="card-title">LTV bands and what they unlock</div><div class="card-sub">Every band you cross saves money at remortgage</div><div class="explainer"><div class="highlight"><strong>90% LTV</strong> — where you are now<br><strong>85% LTV</strong> — below £280,499<br><strong>80% LTV</strong> — below £263,996 — noticeably better<br><strong>75% LTV</strong> — below £247,496 — some of the best deals<br><strong>60% LTV</strong> — below £197,997 — market-leading rates</div><div class="highlight green">Standard payments reach ~82% LTV by Feb 2031. Overpaying £150/month gets below 80%.</div></div></div>
+  <div class="tip-box desktop-full"><h4>Your 5 year game plan</h4><ul><li><strong>Overpay consistently</strong> to reduce LTV before Feb 2031.</li><li><strong>Protect your credit file</strong> — no missed payments, no CCJs, no defaults.</li><li><strong>Avoid large new debts</strong> in the 12 months before remortgaging.</li><li>Contact a broker by <strong>August 2030</strong> at the latest.</li><li>Your wife returning to fuller hours improves <strong>joint affordability</strong> — factor into timing.</li><li>Get a new valuation before remortgaging — rising Harpole values improve your LTV.</li></ul></div>
+</div></div>
+<div id="tab-market" class="panel"><div class="desktop-grid">
+  <div class="card desktop-full"><div class="card-title">Rate projections — what could happen by 2031</div><div class="card-sub">Three realistic scenarios based on Bank of England trajectory</div><div class="explainer" style="margin-bottom:14px;">No one can predict rates with certainty — but these scenarios are grounded in current economic consensus.</div>
+    <div class="scenario-tabs"><button class="scenario-btn active" onclick="showScenario('base',this)">Base case</button><button class="scenario-btn" onclick="showScenario('optimistic',this)">Rates fall</button><button class="scenario-btn" onclick="showScenario('pessimistic',this)">Rates rise</button></div>
+    <div id="scenario-base"><div class="highlight green"><strong>Base case (most likely):</strong> Bank of England base rate falls to ~3.5–4% by 2031. A competitive 5 year fix could be in the <strong>3.8% to 4.3%</strong> range.</div><div class="info-rows"><div class="info-row"><span class="info-key">Estimated remortgage rate</span><span class="info-val green">~4.0%</span></div><div class="info-row"><span class="info-key">Monthly payment (25yr remaining)</span><span class="info-val green">~£1,420</span></div><div class="info-row"><span class="info-key">Monthly saving vs SVR</span><span class="info-val green">~£412/month</span></div><div class="info-row"><span class="info-key">5 year saving vs SVR</span><span class="info-val green">~£24,720</span></div></div></div>
+    <div id="scenario-optimistic" style="display:none;"><div class="highlight green"><strong>Rates fall:</strong> Inflation drops faster. Base rate falls to 2.5–3%. Competitive 5 year fixes in the <strong>3.0% to 3.5%</strong> range.</div><div class="info-rows"><div class="info-row"><span class="info-key">Estimated remortgage rate</span><span class="info-val green">~3.2%</span></div><div class="info-row"><span class="info-key">Monthly payment (25yr remaining)</span><span class="info-val green">~£1,310</span></div><div class="info-row"><span class="info-key">Monthly saving vs SVR</span><span class="info-val green">~£522/month</span></div><div class="info-row"><span class="info-key">5 year saving vs SVR</span><span class="info-val green">~£31,320</span></div></div></div>
+    <div id="scenario-pessimistic" style="display:none;"><div class="highlight red"><strong>Rates rise:</strong> Inflation re-accelerates. Competitive 5 year fixes in the <strong>5.5% to 6.5%</strong> range.</div><div class="info-rows"><div class="info-row"><span class="info-key">Estimated remortgage rate</span><span class="info-val red">~5.8%</span></div><div class="info-row"><span class="info-key">Monthly payment (25yr remaining)</span><span class="info-val red">~£1,720</span></div><div class="info-row"><span class="info-key">Monthly saving vs SVR</span><span class="info-val">~£112/month</span></div><div class="info-row"><span class="info-key">Extra cost vs base case (5yr)</span><span class="info-val red">~£18,000</span></div></div><div class="highlight warn">Overpaying now reduces your balance — meaning any rate rise hurts less in monthly cost.</div></div>
+  </div>
+  <div class="card desktop-full"><div class="card-title">What better deals could look like in 2031</div><div class="card-sub">Illustrative comparison by LTV band — the spread is what matters</div><table class="lender-table"><thead><tr><th>Position</th><th>LTV required</th><th>Rate*</th><th>Est. monthly (25yr)</th><th>vs SVR saving/yr</th></tr></thead><tbody><tr><td><strong>Skipton product transfer</strong></td><td>~82%</td><td class="lender-rate">~4.1%</td><td>~£1,430</td><td class="lender-saving">~£4,825/yr</td></tr><tr><td><strong>High street lender (80%)</strong></td><td>below 80%</td><td class="lender-rate">~3.8%</td><td>~£1,380</td><td class="lender-saving">~£5,424/yr</td></tr><tr><td><strong>Best buy lender (75%)</strong></td><td>below 75%</td><td class="lender-rate">~3.5%</td><td>~£1,340</td><td class="lender-saving">~£5,904/yr</td></tr><tr><td><strong>Market leading (60%)</strong></td><td>below 60%</td><td class="lender-rate">~3.2%</td><td>~£1,295</td><td class="lender-saving">~£6,444/yr</td></tr><tr><td style="color:var(--red);"><strong>Do nothing — SVR</strong></td><td>any</td><td class="lender-rate" style="color:var(--red);">6.54%</td><td style="color:var(--red);">£1,832</td><td style="color:var(--red);">£0</td></tr></tbody></table><div style="font-size:11px;color:var(--muted);margin-top:8px;">*Illustrative based on current market spreads. Actual 2031 rates will differ but relative spread between LTV bands typically holds.</div></div>
+  <div class="card"><div class="card-title">How to maximise your position</div><div class="card-sub">Actions that directly affect the rate you qualify for in 2031</div><div class="explainer"><div class="highlight green"><strong>Get to 80% LTV:</strong> Balance needs to fall to ~£263,996. Overpaying £150/month gets you there — potentially saving an extra £600/year on your rate.</div><div class="highlight"><strong>Property value growth:</strong> If Harpole prices rise 5% to ~£346,500, your LTV falls to ~78% with no extra effort.</div><div class="highlight warn"><strong>Joint income:</strong> If your wife returns to fuller hours by 2031, this significantly expands the deals available to you.</div></div></div>
+  <div class="card"><div class="card-title">Bank of England context</div><div class="card-sub">Where rates have been and where they are heading</div><div class="explainer"><div class="highlight"><strong>2021:</strong> Base rate 0.1% — historic low<br><strong>2022–23:</strong> Rapid rises to 5.25% to fight inflation<br><strong>2024–25:</strong> Gradual cuts as inflation returns to ~2%<br><strong>2031 projection:</strong> Most forecasters expect 3.5–4%</div><div class="highlight green">Your 4.53% rate was locked near the top of the cutting cycle — good timing. Remortgage rates in 2031 should be materially lower.</div><div class="highlight warn">No forecast is guaranteed. In 2021 the consensus was rates would stay near zero — they hit 5.25% within 18 months.</div></div></div>
+  <div class="card desktop-full"><div class="card-title">Product transfer vs full remortgage</div><div class="card-sub">Your two routes when the fix ends in 2031</div><div class="explainer"><div class="highlight"><strong>Product Transfer with Skipton</strong> — stay with Skipton, pick a new deal. No solicitor, no credit check, done online in minutes. Risk: you only see Skipton's deals.</div><div class="highlight"><strong>Full Remortgage to a new lender</strong> — access the entire market. Solicitor required, 4 to 8 weeks. Best when another lender offers materially better terms.<br><br>Use a whole of market broker to compare both. <strong>L&amp;C Mortgages, Habito, and Trussle</strong> are all free — lenders pay them.</div></div></div>
+</div></div>
+<div id="tab-glossary" class="panel"><div class="desktop-grid">
+  <div class="card desktop-full"><div class="card-title">Mortgage glossary</div><div class="card-sub">Every key term explained in plain English</div>
+    <div class="glossary-item"><div class="glossary-term">Amortisation</div><div class="glossary-def">The gradual repayment of your mortgage through monthly payments. Each covers interest and capital, with the split slowly shifting in your favour over 30 years.</div></div>
+    <div class="glossary-item"><div class="glossary-term">APRC</div><div class="glossary-def">Your APRC is 5.9%. A standardised figure showing total annual cost including fees and the variable rate period — used to compare mortgages fairly.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Bank of England Base Rate</div><div class="glossary-def">The rate set by the Bank of England that influences mortgage rates. Your fixed rate of 4.53% is locked regardless of base rate changes until 28/02/2031.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Capital</div><div class="glossary-def">The actual sum borrowed — £296,995. Each payment reduces this. Overpayments reduce it faster. Every pound of capital reduction permanently reduces future interest.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Early Repayment Charge (ERC)</div><div class="glossary-def">A penalty if you repay beyond your 10% annual allowance before the fix ends. Starts at 6% and reduces each year. Compensates Skipton for fixing your rate.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Fixed rate</div><div class="glossary-def">Your rate of 4.53% is locked until 28/02/2031 regardless of Bank of England changes — up or down.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Interest</div><div class="glossary-def">The charge Skipton applies for lending the money. Month 1: approximately £1,121. Falls as your balance reduces — every pound of capital reduction saves future interest.</div></div>
+    <div class="glossary-item"><div class="glossary-term">LTV (Loan to Value)</div><div class="glossary-def">Balance ÷ property value. You started at 90%. Lower LTV = better rates at remortgage. Crossing from 90% to 85% to 80% unlocks progressively better deals.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Overpayment</div><div class="glossary-def">Any payment above your standard £1,508.84/month. Up to 10% of outstanding balance per year without ERC. Goes directly to capital — immediately reduces future interest.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Payment holiday</div><div class="glossary-def">A temporary pause available after 6 months with overpayment surplus. Up to 3 consecutive months. Interest still accrues — balance may increase slightly.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Portability</div><div class="glossary-def">Your mortgage can transfer to a new property without triggering the ERC, provided both transactions complete within 6 months of each other.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Product Transfer</div><div class="glossary-def">Switching to a new Skipton deal at the end of the fix without leaving Skipton. Fast and simple. Always compare with the wider market first.</div></div>
+    <div class="glossary-item"><div class="glossary-term">Remortgage</div><div class="glossary-def">Moving to a completely new lender at the end of the fix. Full application, solicitor required, 4 to 8 weeks. Access to the whole market for potentially better rates.</div></div>
+    <div class="glossary-item"><div class="glossary-term">SVR (Standard Variable Rate)</div><div class="glossary-def">Skipton's default rate of 6.54%, applied automatically if you do nothing when the fix expires on 28/02/2031. Payment jumps to £1,832.08. Never stay on the SVR.</div></div>
+  </div>
+</div></div>
+</div>
+<script>
+const LOAN=296995,RATE=0.0453,MONTHLY_RATE=RATE/12,MONTHLY=1508.84,PROPERTY_VALUE=329995,ANNUAL_LIMIT=LOAN*0.10;
+const payments=[{date:'Wed 07 Jan',amount:499.18},{date:'Fri 30 Jan',amount:1508.84},{date:'Fri 27 Feb',amount:1508.84},{date:'Tue 31 Mar',amount:1508.84},{date:'Thu 30 Apr',amount:1508.84}];
+function fmt(n){return'£'+Math.round(n).toLocaleString('en-GB');}
+function buildPaymentTable(){let b=LOAN;const tb=document.getElementById('payment-rows');payments.forEach(p=>{const i=b*MONTHLY_RATE;const c=Math.max(0,p.amount-i);b=Math.max(0,b-c);const tr=document.createElement('tr');tr.innerHTML='<td style="font-size:11px;color:var(--muted)">'+p.date+'</td><td class="interest-val">'+fmt(i)+'</td><td class="capital-val">'+fmt(c)+'</td><td class="balance-val">'+fmt(b)+'</td>';tb.appendChild(tr);});}
+function buildYearlyTable(){let b=LOAN;const tb=document.getElementById('yearly-rows');for(let y=1;y<=5;y++){let yi=0;for(let m=0;m<12;m++){const i=b*MONTHLY_RATE;const c=Math.min(MONTHLY-i,b);yi+=i;b=Math.max(0,b-c);}const ltv=Math.round((b/PROPERTY_VALUE)*100);const tr=document.createElement('tr');tr.innerHTML='<td>Year '+y+' ('+(2025+y)+')</td><td class="balance-val">'+fmt(b)+'</td><td style="font-family:\'DM Mono\',monospace;color:var(--accent-dark);">'+ltv+'%</td><td class="interest-val">'+fmt(yi)+'</td>';tb.appendChild(tr);}}
+function calcMortgage(extra){let b=LOAN,pay=MONTHLY+extra,months=0,totalInterest=0,bal5=LOAN;for(let m=0;m<60&&bal5>0;m++){const i=bal5*MONTHLY_RATE;bal5=Math.max(0,bal5-Math.min(pay-i,bal5));}while(b>0.01&&months<720){const i=b*MONTHLY_RATE;const c=Math.min(pay-i,b);totalInterest+=i;b-=c;months++;}return{months,totalInterest,bal5};}
+function updateSim(){
+  const extra=parseInt(document.getElementById('op-slider').value);
+  document.getElementById('op-label').textContent='£'+extra.toLocaleString('en-GB');
+  const base=calcMortgage(0),sim=calcMortgage(extra);
+  const saved=base.months-sim.months,iSaved=base.totalInterest-sim.totalInterest;
+  const yrs=Math.floor(sim.months/12),mos=sim.months%12,ySaved=Math.floor(saved/12),mSaved=saved%12;
+  document.getElementById('res-term').textContent=yrs+'y '+mos+'m';
+  document.getElementById('res-saved').textContent=saved>0?ySaved+'y '+mSaved+'m':'—';
+  document.getElementById('res-interest').textContent=iSaved>0?fmt(iSaved):'£0';
+  document.getElementById('res-monthly').textContent=fmt(MONTHLY+extra);
+  document.getElementById('res-balance-5yr').textContent='~'+fmt(sim.bal5);
+  document.getElementById('res-ltv-5yr').textContent='~'+Math.round((sim.bal5/PROPERTY_VALUE)*100)+'%';
+  const annualOver=extra*12;
+  const pct=Math.min(100,(annualOver/ANNUAL_LIMIT)*100);
+  const fill=document.getElementById('cap-bar-fill');
+  fill.style.width=pct+'%';
+  fill.style.background=pct>90?'linear-gradient(90deg,#9b2226,#c0393e)':pct>60?'linear-gradient(90deg,#c8a96e,#a07840)':'linear-gradient(90deg,#2d6a4f,#52b788)';
+  document.getElementById('cap-used-label').textContent=fmt(annualOver)+' used/yr';
+  document.getElementById('cap-max-label').textContent=fmt(ANNUAL_LIMIT)+'/yr limit';
+  const note=document.getElementById('cap-note');
+  note.textContent=pct>=100?'⚠ Exceeded 10% limit — ERC applies to the excess.':pct>60?'Getting closer to your limit — monitor this.':'You are within your limit — no ERC applies.';
+  note.style.color=pct>=100?'var(--red)':pct>60?'var(--accent-dark)':'var(--muted)';
+}
+function showScenario(id,btn){['base','optimistic','pessimistic'].forEach(s=>{const el=document.getElementById('scenario-'+s);if(el)el.style.display=s===id?'block':'none';});document.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function showTab(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');}
+buildPaymentTable();buildYearlyTable();updateSim();
+</script>
+</body>
+</html>
